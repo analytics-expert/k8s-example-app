@@ -16,6 +16,6 @@ spec:
     targetPort: 3306 # Porta alvo do container
   selector:
     # Seletor de pods alvos
-    app: mysql-db # Deve corresponder ao rótulo da aplicação
+    app: mysql-db-pod # Deve corresponder ao rótulo da aplicação
   # Tipo de serviço
   type: ClusterIP

@@ -10,12 +10,12 @@ spec:
   selector:
     matchLabels:
       # Rótulo para identificar o Pod
-      app: mysql-db 
+      app: mysql-db-pod
   template:
     metadata:
       labels:
         # Rótulo para identificar o Pod
-        app: mysql-db
+        app: mysql-db-pod
     spec:
       containers:
       # Nome do Container
