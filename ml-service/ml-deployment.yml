@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ml-service-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ml-service-pod
+  template:
+    metadata:
+      labels:
+        app: ml-service-pod
+    spec:
+      containers:
+      - name: ml-service-container
+        image: ml-service
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 5001
+        env:
+        - name: DB_SERVICE_URL
+          value: http://db-service:5000
+        resources:
+          limits:
+            memory: 4Gi
+            cpu: 1000m
+          requests:
+            memory: 256Mi
+            cpu: 250m
