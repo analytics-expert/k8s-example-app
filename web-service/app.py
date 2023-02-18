@@ -13,7 +13,8 @@ def index():
     """
     DB_SERVICE_URL = os.environ.get("DB_SERVICE_URL")
 
-    # Faz uma requisição GET para o endpoint train_history do serviço de banco de dados
+    # Faz uma requisição GET para o endpoint train_history do serviço
+    # de banco de dados
     response = requests.get(f"{DB_SERVICE_URL}/train_history")
     train_history = response.json()
 

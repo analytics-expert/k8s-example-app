@@ -27,7 +27,10 @@ class Database:
         cursor = cnx.cursor()
 
         # Gera a consulta SQL
-        query = "INSERT INTO train_history (hidden_layer_sizes, score) VALUES (%s, %s)"
+        query = """
+            INSERT INTO train_history (hidden_layer_sizes, score)
+            VALUES (%s, %s)
+        """
         cursor.execute(query, (hidden_layer_sizes, score))
         cnx.commit()
 
@@ -47,7 +50,12 @@ class Database:
         cursor = cnx.cursor(dictionary=True)
 
         # Gera a consulta SQL
-        query = "SELECT train_history_id, timestamp, hidden_layer_sizes, score FROM train_history ORDER BY score DESC LIMIT 50"
+        query = """
+            SELECT train_history_id, timestamp, hidden_layer_sizes, score
+            FROM train_history
+            ORDER BY score
+            DESC LIMIT 50
+        """
         cursor.execute(query)
         results = cursor.fetchall()
 

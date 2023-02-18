@@ -12,7 +12,8 @@ def load_data():
         Quatro objetos que representam os dados de treinamento e teste.
 
     """
-    # Utilizando a função make_classification para criar um conjunto de dados sintético.
+    # Utilizando a função make_classification para criar um conjunto
+    # de dados sintético.
     X, y = make_classification(
         n_samples=1000, n_features=20, n_classes=2, random_state=None
     )
@@ -24,7 +25,8 @@ def load_data():
 
 def train_model():
     """
-    Função para treinar o modelo de rede neural utilizando o MLPClassifier do sklearn.
+    Função para treinar o modelo de rede neural utilizando o MLPClassifier
+    do sklearn.
 
     Returns:
         Número de neurônios na camada oculta e a acurácia do modelo.

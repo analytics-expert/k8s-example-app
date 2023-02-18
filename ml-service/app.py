@@ -26,7 +26,7 @@ def train():
         "model_score": score
     }
     response = requests.post(url, json=data)
-    
+
     return {
         "training": {
             "hidden_layer_sizes": hidden_layer_sizes,
