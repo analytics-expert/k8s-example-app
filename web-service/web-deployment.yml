@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-service-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web-service-pod
+  template:
+    metadata:
+      labels:
+        app: web-service-pod
+    spec:
+      containers:
+      - name: web-service-container
+        image: web-service
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 5002
+        env:
+        - name: DB_SERVICE_URL
+          value: http://db-service:5000
+        resources:
+          limits:
+            memory: 1Gi
+            cpu: 1000m
+          requests:
+            memory: 256Mi
+            cpu: 250m
