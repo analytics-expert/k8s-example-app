@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+# Metadados da solicitação de volume persistente
+metadata:
+  name: mysql-pvc # Nome da solicitação
+# Especificações da solicitação de volume persistente
+spec:
+  accessModes: # Modos de acesso
+    - ReadWriteOnce # Leitura e escrita somente uma vez
+  resources: # Recursos solicitados
+    requests:
+      storage: 1Gi # Tamanho do armazenamento solicitado

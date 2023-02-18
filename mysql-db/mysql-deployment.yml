@@ -1,0 +1,42 @@
+# Arquivo de Deployment do banco de dados MySQL
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-deployment # Nome do Deployment
+spec:
+  replicas: 1 # Número de réplicas do Pod
+  selector:
+    matchLabels:
+      app: mysql-db # Rótulo para identificar o Pod
+  template:
+    metadata:
+      labels:
+        app: mysql-db # Rótulo para identificar o Pod
+    spec:
+      containers:
+      - name: mysql-db-container # Nome do Container
+        image: mysql:8.0.32 # Imagem do MySQL a ser usada
+        ports:
+        - containerPort: 3306 # Porta do Container que será exposta
+        env:
+        - name: MYSQL_ROOT_PASSWORD # Variável de ambiente para a senha root do MySQL
+          value: "secret-password" # Valor da variável de ambiente (senha root)
+        volumeMounts:
+        - name: mysql-data # Nome do volume montado para armazenar os dados do MySQL
+          mountPath: /var/lib/mysql # Caminho no Container onde o volume será montado
+        - name: init-mysql  # Nome do volume montado para inicializar o banco de dados
+          mountPath: /docker-entrypoint-initdb.d # Caminho no Container onde o volume será montado
+        resources:
+          limits:
+            memory: 1Gi # Limite máximo de memória para o Container
+            cpu: 1000m # Limite máximo de CPU para o Container
+          requests:
+            memory: 256Mi # Memória requisitada pelo Container
+            cpu: 250m # CPU requisitada pelo Container
+      volumes:
+      - name: mysql-data # Nome do volume
+        persistentVolumeClaim:
+          claimName: mysql-pvc # Nome da solicitação de volume persistente
+      - name: init-mysql # Nome do volume
+        configMap:
+          name: init-mysql-configmap # Nome do ConfigMap com o script de inicialização do banco de dados
