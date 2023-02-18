@@ -3,19 +3,19 @@ apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: mysql-pv
-# Especificando a capacidade de armazenamento
 spec:
+  # Especificando a capacidade de armazenamento
   capacity:
     storage: 1Gi
-# Modo de acesso ao armazenamento
+  # Modo de acesso ao armazenamento
   accessModes:
     - ReadWriteOnce
-# Política de reivindicação do volume persistente
+  # Política de reivindicação do volume persistente
   persistentVolumeReclaimPolicy: Retain
-# Caminho no host
+  # Caminho no host
   hostPath:
     path: /data/mysql-pv
-# Referencia ao PersistentVolumeClaim
+  # Referencia ao PersistentVolumeClaim
   claimRef:
     name: mysql-pvc
     namespace: default

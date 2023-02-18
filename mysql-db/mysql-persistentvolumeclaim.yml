@@ -1,12 +1,18 @@
+# Definindo um recurso PersistentVolumeClaim
 apiVersion: v1
 kind: PersistentVolumeClaim
 # Metadados da solicitação de volume persistente
 metadata:
-  name: mysql-pvc # Nome da solicitação
+  # Nome da solicitação
+  name: mysql-pvc
 # Especificações da solicitação de volume persistente
 spec:
-  accessModes: # Modos de acesso
-    - ReadWriteOnce # Leitura e escrita somente uma vez
-  resources: # Recursos solicitados
+  # Modos de acesso
+  accessModes:
+    # Leitura e escrita somente uma vez
+    - ReadWriteOnce
+  resources:
+    # Recursos solicitados
     requests:
-      storage: 1Gi # Tamanho do armazenamento solicitado
+      # Tamanho do armazenamento solicitado
+      storage: 1Gi 

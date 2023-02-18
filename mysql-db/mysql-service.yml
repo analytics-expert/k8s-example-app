@@ -1,17 +1,21 @@
-# API Version utilizada
+# Definindo um Service para o mysql
 apiVersion: v1
 # Tipo de objeto a ser criado
 kind: Service
 # Metadados do serviço
 metadata:
-  name: mysql-service # Nome do serviço
+  # Nome do serviço
+  name: mysql-service
   labels:
-    app: mysql-service # Rótulo da aplicação
+    # Rótulo da aplicação
+    app: mysql-service
 # Especificação do serviço
 spec:
   ports: # Portas expostas pelo serviço
   - port: 3306 # Porta externa
     targetPort: 3306 # Porta alvo do container
-  selector: # Seletor de pods alvos
+  selector:
+    # Seletor de pods alvos
     app: mysql-db # Deve corresponder ao rótulo da aplicação
-  type: ClusterIP # Tipo de serviço
+  # Tipo de serviço
+  type: ClusterIP

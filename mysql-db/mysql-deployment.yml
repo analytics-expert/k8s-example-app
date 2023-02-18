@@ -2,41 +2,56 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: mysql-deployment # Nome do Deployment
+  # Nome do Deployment
+  name: mysql-deployment 
 spec:
-  replicas: 1 # Número de réplicas do Pod
+  # Número de réplicas do Pod
+  replicas: 1 
   selector:
     matchLabels:
-      app: mysql-db # Rótulo para identificar o Pod
+      # Rótulo para identificar o Pod
+      app: mysql-db 
   template:
     metadata:
       labels:
-        app: mysql-db # Rótulo para identificar o Pod
+        # Rótulo para identificar o Pod
+        app: mysql-db
     spec:
       containers:
-      - name: mysql-db-container # Nome do Container
-        image: mysql:8.0.32 # Imagem do MySQL a ser usada
+      # Nome do Container
+      - name: mysql-db-container 
+        # Imagem do MySQL a ser usada
+        image: mysql:8.0.32 
         ports:
-        - containerPort: 3306 # Porta do Container que será exposta
+        # Porta do Container que será exposta
+        - containerPort: 3306 
         env:
-        - name: MYSQL_ROOT_PASSWORD # Variável de ambiente para a senha root do MySQL
-          value: "secret-password" # Valor da variável de ambiente (senha root)
+        # Variável de ambiente para a senha root do MySQL
+        - name: MYSQL_ROOT_PASSWORD 
+          value: "secret-password"
         volumeMounts:
-        - name: mysql-data # Nome do volume montado para armazenar os dados do MySQL
-          mountPath: /var/lib/mysql # Caminho no Container onde o volume será montado
-        - name: init-mysql  # Nome do volume montado para inicializar o banco de dados
-          mountPath: /docker-entrypoint-initdb.d # Caminho no Container onde o volume será montado
+        # Nome do volume montado para armazenar os dados do MySQL
+        - name: mysql-data 
+          mountPath: /var/lib/mysql
+        # Nome do volume montado para inicializar o banco de dados
+        - name: init-mysql
+          mountPath: /docker-entrypoint-initdb.d
         resources:
           limits:
-            memory: 1Gi # Limite máximo de memória para o Container
-            cpu: 1000m # Limite máximo de CPU para o Container
+            # Limite máximo de memória e CPU para o Container
+            memory: 1Gi 
+            cpu: 1000m
           requests:
-            memory: 256Mi # Memória requisitada pelo Container
-            cpu: 250m # CPU requisitada pelo Container
+            # Memória e CPU requisitada pelo Container
+            memory: 256Mi 
+            cpu: 250m
       volumes:
-      - name: mysql-data # Nome do volume
+      # Nome do volume
+      - name: mysql-data 
         persistentVolumeClaim:
-          claimName: mysql-pvc # Nome da solicitação de volume persistente
-      - name: init-mysql # Nome do volume
+          # Nome da solicitação de volume persistente
+          claimName: mysql-pvc 
+      - name: init-mysql
         configMap:
-          name: init-mysql-configmap # Nome do ConfigMap com o script de inicialização do banco de dados
+          # Nome do ConfigMap com o script de inicialização do banco de dados
+          name: init-mysql-configmap
