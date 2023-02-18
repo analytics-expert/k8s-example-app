@@ -6,12 +6,14 @@ from model import train_model
 # Criação da aplicação Flask
 app = Flask(__name__)
 
-@app.route('/')
+
+@app.route("/")
 def index():
     """Retorna uma mensagem de boas-vindas."""
-    return "Aplicação para exemplificar o uso Docker and KB8's"
+    return "Aplicação para exemplificar o uso Docker and K8s"
 
-@app.route('/train')
+
+@app.route("/train")
 def train():
     """Treina o modelo e insere o histórico de treinamento na base de dados."""
     # Treina o modelo
