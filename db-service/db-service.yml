@@ -1,12 +1,20 @@
+# Definindo um Service para o db
 apiVersion: v1
+# Tipo de objeto a ser criado
 kind: Service
+# Metadados do serviço
 metadata:
+  # Nome do serviço
   name: db-service
 spec:
   selector:
+    # Rótulo para identificar o Pod associado a este serviço
     app: db-service-pod
   ports:
   - name: http
+    # Porta externa do serviço
     port: 5000
+    # Porta interna do Container
     targetPort: 5000
+  # Tipo de serviço
   type: ClusterIP

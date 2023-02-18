@@ -1,9 +1,6 @@
 # Define a imagem base para o nosso container
 FROM python:3.8-slim-buster
 
-RUN apt update
-RUN apt-get install iputils-ping -y
-
 # Define uma variável de ambiente para garantir que
 # o Python não escreva arquivos bytecode
 ENV PYTHONUNBUFFERED 1
@@ -34,4 +31,3 @@ USER appuser
 
 # Define o comando para iniciar o aplicativo
 CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]
-# database-service

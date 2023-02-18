@@ -5,7 +5,7 @@ metadata:
   # Nome do ConfigMap
   name: init-mysql-configmap
 data:
-  # Nome do arquivo de script SQL
+  # Arquivo de script SQL
   init.sql: |
     -- Cria a base de dados "k8s_app" (se ela não existir)
     CREATE DATABASE IF NOT EXISTS k8s_app;

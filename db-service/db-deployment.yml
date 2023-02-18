@@ -1,24 +1,34 @@
+# Arquivo de Deployment do serviço de banco de dados
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  # Nome do Deployment
   name: db-service-deployment
 spec:
+  # Número de réplicas do Pod
   replicas: 1
   selector:
     matchLabels:
+      # Rótulo para identificar o Pod
       app: db-service-pod
   template:
     metadata:
       labels:
+        # Rótulo para identificar o Pod
         app: db-service-pod
     spec:
       containers:
+      # Nome do Container
       - name: db-service-container
+        # Imagem do serviço de banco de dados
         image: db-service
+        # Política de pull da imagem
         imagePullPolicy: Never
         ports:
+        # Porta do Container que será exposta
         - containerPort: 5000
         env:
+        # Variáveis de ambiente para a conexão com o banco de dados
         - name: MYSQL_HOST
           value: mysql-service
         - name: MYSQL_USER
@@ -29,8 +39,10 @@ spec:
           value: k8s_app
         resources:
           limits:
+            # Limite máximo de memória e CPU para o Container
             memory: 1Gi
             cpu: 1000m
           requests:
+            # Memória e CPU requisitada pelo Container
             memory: 256Mi
             cpu: 250m
