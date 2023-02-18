@@ -1,30 +1,40 @@
+# Arquivo de Deployment do serviço de ML
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: ml-service-deployment
 spec:
+  # Número de réplicas do Pod
   replicas: 1
   selector:
     matchLabels:
+      # Rótulo para identificar o Pod
       app: ml-service-pod
   template:
     metadata:
       labels:
+        # Rótulo para identificar o Pod
         app: ml-service-pod
     spec:
       containers:
       - name: ml-service-container
+        # Imagem do serviço de machine learning a ser usada
         image: ml-service
+        # Política de pull da imagem
         imagePullPolicy: Never
         ports:
+        # Porta do Container que será exposta
         - containerPort: 5001
         env:
+        # URL do serviço de banco de dados
         - name: DB_SERVICE_URL
           value: http://db-service:5000
         resources:
           limits:
-            memory: 4Gi
+            # Limite máximo de memória e CPU para o Container
+            memory: 4Gi 
             cpu: 1000m
           requests:
-            memory: 256Mi
+            # Memória e CPU requisitada pelo Container
+            memory: 256Mi 
             cpu: 250m

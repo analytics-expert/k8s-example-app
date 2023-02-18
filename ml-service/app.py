@@ -3,22 +3,28 @@ import requests
 from flask import Flask
 from model import train_model
 
+# Criação da aplicação Flask
 app = Flask(__name__)
 
 @app.route('/')
 def index():
+    """Retorna uma mensagem de boas-vindas."""
     return "Aplicação para exemplificar o uso Docker and KB8's"
 
 @app.route('/train')
 def train():
+    """Treina o modelo e insere o histórico de treinamento na base de dados."""
+    # Treina o modelo
     hidden_layer_sizes, score = train_model()
-    # Insert the training history to the db-service
+
+    # Insere o histórico de treinamento na base de dados
     url = os.environ.get("DB_SERVICE_URL") + "/train_history"
     data = {
         "hidden_layer_sizes": hidden_layer_sizes,
         "model_score": score
     }
     response = requests.post(url, json=data)
+    
     return {
         "training": {
             "hidden_layer_sizes": hidden_layer_sizes,

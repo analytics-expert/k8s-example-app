@@ -1,12 +1,18 @@
+# Arquivo de serviço para o Deployment do serviço de aprendizado de máquina
 apiVersion: v1
 kind: Service
 metadata:
+  # Nome do Serviço
   name: ml-service
 spec:
+  # Tipo de serviço
   type: NodePort
   selector:
+    # Rótulo para identificar o Pod
     app: ml-service-pod
   ports:
+  # Porta do Serviço
   - name: http
     port: 5001
+    # Porta alvo do Pod
     targetPort: 5001
