@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-service-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db-service-pod
+  template:
+    metadata:
+      labels:
+        app: db-service-pod
+    spec:
+      containers:
+      - name: db-service-container
+        image: db-service
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 5000
+        env:
+        - name: MYSQL_HOST
+          value: mysql-service
+        - name: MYSQL_USER
+          value: k8s_app_user
+        - name: MYSQL_PASSWORD
+          value: "123"
+        - name: MYSQL_DB
+          value: k8s_app
+        resources:
+          limits:
+            memory: 1Gi
+            cpu: 1000m
+          requests:
+            memory: 256Mi
+            cpu: 250m
