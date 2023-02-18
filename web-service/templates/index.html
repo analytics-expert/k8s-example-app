@@ -1,49 +1,58 @@
 {% extends "base.html" %}
 {% block content %}
+<!-- Início da div row -->
 <div class="row">
    <div class="col-md-12">
       <div class="card">
+         <!-- Cabeçalho da card principal com título e botão -->
          <div class="card-header d-flex justify-content-between">
             <h4 class="card-title"> K8s App </h4>
             <button type="button" class="btn btn-primary btn-round align-self-center" onclick="window.location.reload()">Atualizar</button>
          </div>
+         <!-- Corpo da card principal com duas sub-cards -->
          <div class="card-body">
             <div class="row">
                <div class="col-md-4">
-                 <div class="card card-stats" style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); display: flex; align-items: center; justify-content: center;">
-                   <div class="card-body">
-                     <div class="icon-big text-center">
-                       <i class="fa fa-refresh" aria-hidden="true"></i>
+                  <div class="card card-stats" style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); display: flex; align-items: center; justify-content: center;">
+                     <div class="card-body">
+                        <!-- Ícone da sub-card e informações -->
+                        <div class="icon-big text-center">
+                           <i class="fa fa-refresh" aria-hidden="true"></i>
+                        </div>
+                        <div class="numbers">
+                           <p class="card-category card-label text-center">Treinamento em Andamento</p>
+                           <h3 class="card-title text-center">10</h3>
+                        </div>
                      </div>
-                     <div class="numbers">
-                       <p class="card-category card-label text-center">Treinamento em Andamento</p>
-                       <h3 class="card-title text-center">10</h3>
-                     </div>
-                   </div>
-                 </div>
+                  </div>
                </div>
                <div class="col-md-4">
-                 <div class="card card-stats" style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); display: flex; align-items: center; justify-content: center;">
-                   <div class="card-body">
-                     <div class="icon-big text-center">
-                       <i class="fa fa-list-ul" aria-hidden="true"></i>
+                  <div class="card card-stats" style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); display: flex; align-items: center; justify-content: center;">
+                     <div class="card-body">
+                        <!-- Ícone da sub-card e informações -->
+                        <div class="icon-big text-center">
+                           <i class="fa fa-list-ul" aria-hidden="true"></i>
+                        </div>
+                        <div class="numbers">
+                           <p class="card-category card-label text-center">Total de Treinos</p>
+                           <!-- Inclusão de variável do Flask no template -->
+                           <h3 class="card-title text-center">{{ train_history|length }}</h3>
+                        </div>
                      </div>
-                     <div class="numbers">
-                       <p class="card-category card-label text-center">Total de Treinos</p>
-                       <h3 class="card-title text-center">{{ train_history|length }}</h3>
-                     </div>
-                   </div>
-                 </div>
+                  </div>
                </div>
-             </div>
+            </div>
             <br>
+            <!-- Sub-card de Histórico de Treinos -->
             <div class="row">
                <div class="col-md-12">
                   <div class="card card-plain">
+                     <!-- Cabeçalho da sub-card com título e descrição -->
                      <div class="card-header">
                         <h4 class="card-title"> Histórico de Treinos </h4>
                         <p class="card-category"> Histórico de treinos realizados no modelo </p>
                      </div>
+                     <!-- Corpo da sub-card com tabela dinâmica -->
                      <div class="card-body">
                         <div class="table-responsive">
                            <table class="table table-hover">
@@ -58,15 +67,17 @@
                                     Tamanho da Camada Oculta
                                  </th>
                                  <th>
-                                    Pontuação
+                                    Score
                                  </th>
                               </thead>
                               <tbody>
+                                 <!-- Loop em variável do Flask para preencher a tabela -->
                                  {% for item in train_history %}
-                                 <td>{{ item.train_history_id }}</td>
-                                 <td>{{ item.timestamp }}</td>
-                                 <td>{{ item.hidden_layer_sizes }}</td>
-                                 <td>{{ item.score }}</td>
+                                 <tr>
+                                    <td>{{ item.train_history_id }}</td>
+                                    <td>{{ item.timestamp }}</td>
+                                    <td>{{ item.hidden_layer_sizes }}</td>
+                                    <td>{{ item.score }}</td>
                                  </tr>
                                  {% endfor %}
                               </tbody>

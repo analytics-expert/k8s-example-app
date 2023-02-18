@@ -1,12 +1,18 @@
+# Definindo um Service para o db
 apiVersion: v1
+# Tipo de objeto a ser criado
 kind: Service
 metadata:
   name: web-service
 spec:
+  # Tipo de Serviço
   type: NodePort
   selector:
+    # Rótulo para identificar o Pod
     app: web-service-pod
   ports:
+  # Nome e porta do Serviço
   - name: http
     port: 5002
+    # Porta alvo do Container
     targetPort: 5002

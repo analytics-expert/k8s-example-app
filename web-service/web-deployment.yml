@@ -1,30 +1,41 @@
+# Arquivo de Deployment do serviço web
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  # Nome do Deployment
   name: web-service-deployment
 spec:
-  replicas: 1
+  # Número de réplicas do Pod
+  replicas: 1 
   selector:
     matchLabels:
+      # Rótulo para identificar o Pod
       app: web-service-pod
   template:
     metadata:
       labels:
+        # Rótulo para identificar o Pod
         app: web-service-pod
     spec:
       containers:
+      # Nome do Container
       - name: web-service-container
+        # Imagem do web-service a ser usada
         image: web-service
         imagePullPolicy: Never
         ports:
+        # Porta do Container que será exposta
         - containerPort: 5002
         env:
+        # URL do serviço de banco de dados
         - name: DB_SERVICE_URL
           value: http://db-service:5000
         resources:
           limits:
+            # Limite máximo de memória e CPU para o Container
             memory: 1Gi
             cpu: 1000m
           requests:
+            # Memória e CPU requisitada pelo Container
             memory: 256Mi
             cpu: 250m
