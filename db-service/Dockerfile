@@ -30,4 +30,4 @@ RUN useradd --create-home --shell /bin/bash appuser
 USER appuser
 
 # Define o comando para iniciar o aplicativo
-CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]
+CMD ["gunicorn", "app:app", "-b", "0.0.0.0:5000"]
