@@ -11,7 +11,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   # Política de reivindicação do volume persistente
-  persistentVolumeReclaimPolicy: Retain
+  persistentVolumeReclaimPolicy: Delete
   # Caminho no host
   hostPath:
     path: /data/mysql-pv
