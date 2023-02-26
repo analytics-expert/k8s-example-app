@@ -24,6 +24,7 @@ COPY . .
 
 # Cria um usuário para executar o nosso aplicativo
 RUN useradd --create-home --shell /bin/bash appuser
+RUN chown appuser ./models
 
 # Define o usuário padrão para executar o aplicativo 
 # dentro do container
