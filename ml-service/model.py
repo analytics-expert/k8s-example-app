@@ -1,4 +1,3 @@
-
 import logging
 import os
 from random import randint
@@ -8,8 +7,9 @@ import yaml
 from data import create_random_sample_wine, load_wine_data
 from sklearn.neural_network import MLPClassifier
 
-MODEL_FILENAME = 'models/wine_model.pkl'
-SCORE_FILENAME = 'models/wine_model_score.yaml'
+MODEL_FILENAME = "models/wine_model.pkl"
+SCORE_FILENAME = "models/wine_model_score.yaml"
+
 
 def train_and_save_model():
     """
@@ -40,6 +40,7 @@ def train_and_save_model():
 
     return hidden_layer_sizes, model_score
 
+
 def load_and_predict(X):
     """
     Carrega um modelo de classificação treinado e realiza a predição dos dados fornecidos.
@@ -53,7 +54,7 @@ def load_and_predict(X):
     # Verifica se o arquivo do modelo existe e, caso não exista, retorna [-1]
     if not os.path.isfile(MODEL_FILENAME):
         return [-1]
-    
+
     # Carrega o modelo salvo em disco
     clf = joblib.load(MODEL_FILENAME)
 
@@ -61,6 +62,7 @@ def load_and_predict(X):
     y_pred = clf.predict(X.to_numpy())
 
     return y_pred.tolist()
+
 
 def _save_model(clf, model_score):
     """
@@ -82,6 +84,7 @@ def _save_model(clf, model_score):
         # Salva o score do modelo em um arquivo YAML
         _save_model_score(SCORE_FILENAME, model_score)
 
+
 def _get_current_model_score(score_filename):
     """
     Função para obter o score do modelo atual.
@@ -93,13 +96,14 @@ def _get_current_model_score(score_filename):
         Score do modelo atual.
     """
     try:
-        with open(score_filename, 'r') as f:
+        with open(score_filename, "r") as f:
             scores = yaml.load(f, Loader=yaml.FullLoader)
-            current_score = scores['wine_model_score']
+            current_score = scores["wine_model_score"]
     except (FileNotFoundError, yaml.YAMLError, KeyError):
         current_score = 0
         raise
     return current_score
+
 
 def _save_model_score(score_filename, model_score):
     """
@@ -110,8 +114,8 @@ def _save_model_score(score_filename, model_score):
         model_score: Score do modelo a ser salvo.
     """
     try:
-        with open(score_filename, 'w') as f:
-            scores = {'wine_model_score': float(model_score)}
+        with open(score_filename, "w") as f:
+            scores = {"wine_model_score": float(model_score)}
             yaml.dump(scores, f)
     except FileNotFoundError:
         pass
@@ -121,4 +125,3 @@ if __name__ == "__main__":
     print(train_and_save_model())
     sample = create_random_sample_wine()
     print(load_and_predict(sample))
-    

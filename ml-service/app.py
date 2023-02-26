@@ -12,12 +12,14 @@ app = Flask(__name__)
 # Define a URL do serviço de banco de dados
 DB_SERVICE_URL = os.environ.get("DB_SERVICE_URL") + "/train_history"
 
+
 @app.route("/health")
 def health():
     """Endpoint para verificar a saúde do serviço."""
     return {"ml-service": "OK"}
 
-@app.route('/data', methods=['GET'])
+
+@app.route("/data", methods=["GET"])
 def data():
     """Endpoint para obter os dados de treinamento do modelo."""
     # Create a Pandas DataFrame
@@ -28,6 +30,7 @@ def data():
 
     # Return the dictionary as a JSON response
     return jsonify(dict_data)
+
 
 @app.route("/train", methods=["POST"])
 def train():
@@ -50,11 +53,12 @@ def train():
         "db_response": response.status_code
     }
 
+
 @app.route("/sample", methods=["GET"])
 def get_sample():
     """Endpoint para obter uma amostra aleatória dos dados de treinamento."""
     sample = create_random_sample_wine()
-    
+
     # Convert the DataFrame to a dictionary
     dict_sample = sample.to_dict()
 
@@ -62,7 +66,7 @@ def get_sample():
     return jsonify(dict_sample)
 
 
-@app.route('/predict', methods=['POST'])
+@app.route("/predict", methods=["POST"])
 def predict():
     """Endpoint para fazer a predição com base nos dados recebidos via requisição POST."""
     # Get the JSON payload from the request
@@ -75,4 +79,4 @@ def predict():
     y_pred = load_and_predict(df)
 
     # Return the predictions as a JSON response
-    return jsonify({'predictions': y_pred})
+    return jsonify({"predictions": y_pred})

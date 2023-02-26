@@ -9,6 +9,7 @@ def load_wine_data_as_frame():
     data_wine = load_wine(as_frame=True)
     return data_wine.frame
 
+
 def load_wine_data():
     """
     Função para carregar o conjunto de dados Wine para treinar o modelo.
@@ -26,9 +27,10 @@ def load_wine_data():
 
     return X_train, X_test, y_train, y_test
 
+
 def create_random_sample_wine(sample_size: int = 1) -> pd.DataFrame:
     """
-    Cria uma amostra aleatória de um DataFrame que contém valores dentro 
+    Cria uma amostra aleatória de um DataFrame que contém valores dentro
     do intervalo de valores máximo e mínimo de cada coluna.
 
     Args:

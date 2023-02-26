@@ -14,7 +14,7 @@ class Database:
             pool_size (int): Tamanho da piscina de conexões (padrão 10).
         """
         self.conn_pool = _get_mysql_connection_pool(pool_size)
-    
+
     def check_db_connection(self):
         """
         Verifica se a conexão com o banco de dados está funcionando.

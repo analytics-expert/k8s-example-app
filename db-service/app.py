@@ -9,6 +9,7 @@ app = Flask(__name__)
 # Cria a instância do Database
 db = Database()
 
+
 @app.route("/health")
 def health():
     """
@@ -23,6 +24,7 @@ def health():
         "db-service": "OK",
         "db-connection": ("UP" if status else "DOWN")
     }, 200 if status else 500
+
 
 @app.route("/train_history", methods=["POST"])
 def insert_train_history():
