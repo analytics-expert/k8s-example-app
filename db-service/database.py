@@ -12,7 +12,21 @@ class Database:
         Args:
             pool_size (int): Tamanho da piscina de conexões (padrão 10).
         """
-        self.pool = _get_mysql_connection_pool(pool_size)
+        self.conn_pool = _get_mysql_connection_pool(pool_size)
+    
+    def check_db_connection(self):
+        """
+        Verifica se a conexão com o banco de dados está funcionando.
+
+        Retorna:
+            bool: True se a conexão está funcionando, False caso contrário.
+        """
+        try:
+            cnx = self.conn_pool.get_connection()
+            cnx.close()
+            return True
+        except Exception:
+            return False
 
     def insert_train_history(self, hidden_layer_sizes, score):
         """
@@ -23,7 +37,7 @@ class Database:
             score (float): Score do modelo.
         """
         # Obtém uma conexão da piscina de conexões
-        cnx = self.pool.get_connection()
+        cnx = self.conn_pool.get_connection()
         cursor = cnx.cursor()
 
         # Gera a consulta SQL
@@ -46,7 +60,7 @@ class Database:
             list: Lista com os registros retornados.
         """
         # Obtém uma conexão da piscina de conexões
-        cnx = self.pool.get_connection()
+        cnx = self.conn_pool.get_connection()
         cursor = cnx.cursor(dictionary=True)
 
         # Gera a consulta SQL
@@ -73,7 +87,7 @@ def _get_mysql_connection_pool(pool_size):
     O tamanho do pool é passado como parâmetro.
 
     Args:
-        pool_size: Tamanho do pool de conexões.
+        pool_size: tamanho do pool de conexões.
     Returns:
         Pool de conexões com o banco de dados.
     """
