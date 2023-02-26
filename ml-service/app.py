@@ -1,9 +1,10 @@
 import os
+
 import pandas as pd
-from data import load_wine_data_as_frame, create_random_sample_wine
 import requests
+from data import create_random_sample_wine, load_wine_data_as_frame
 from flask import Flask, jsonify, request
-from model import train_and_save_model, load_and_predict
+from model import load_and_predict, train_and_save_model
 
 # Criação da aplicação Flask
 app = Flask(__name__)

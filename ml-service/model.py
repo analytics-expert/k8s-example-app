@@ -1,11 +1,11 @@
 
-from random import randint
-from sklearn.neural_network import MLPClassifier
-from data import load_wine_data, create_random_sample_wine
-import logging 
+import logging
 import os
-import yaml
+from random import randint
+
 import joblib
+import yaml
+from data import create_random_sample_wine, load_wine_data
 from sklearn.neural_network import MLPClassifier
 
 MODEL_FILENAME = 'models/wine_model.pkl'

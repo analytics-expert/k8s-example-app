@@ -1,4 +1,5 @@
 import json
+
 from database import Database
 from flask import Flask, request
 
