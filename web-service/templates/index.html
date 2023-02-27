@@ -1,13 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
+
 <!-- Início da div row -->
 <div class="row">
    <div class="col-md-12">
       <div class="card">
          <!-- Cabeçalho da card principal com título e botão -->
-         <div class="card-header d-flex justify-content-between">
+         <div class="card-header d-flex justify-content-between justify-content-end">
             <h4 class="card-title"> K8s App </h4>
-            <button type="button" class="btn btn-primary btn-round align-self-center" onclick="window.location.reload()">Atualizar</button>
+            <div>
+               <button type="button" class="btn btn-primary btn-round" id="btn-treinar" onclick="treinarModelo()">Treinar Novo Modelo</button>
+               <button type="button" class="btn btn-primary btn-round" id="btn-refresh" onclick="window.location.reload()">Atualizar</button>
+            </div>
          </div>
          <!-- Corpo da card principal com duas sub-cards -->
          <div class="card-body">
