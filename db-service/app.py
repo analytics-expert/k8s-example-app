@@ -6,9 +6,6 @@ from flask import Flask, request
 # Cria a instância Flask
 app = Flask(__name__)
 
-# Cria a instância do Database
-db = Database()
-
 
 @app.route("/health")
 def health():
@@ -19,6 +16,8 @@ def health():
         dict: Dicionário com o status da conexão.
         int: Código HTTP 200 se a conexão estiver funcionando, caso contrário 500.
     """
+    # Cria ou retona a instância do Database
+    db = Database()
     status = db.check_db_connection()
     return {
         "db-service": "OK",
@@ -33,21 +32,30 @@ def insert_train_history():
     A rota espera receber uma requisição POST com os seguintes dados no corpo da requisição:
         {
             "hidden_layer_sizes": <int>,
+            "learning_rate": <float>,
+            "alpha": <float>,
             "model_score": <float>
         }
 
     Onde:
         hidden_layer_sizes: representa o tamanho da camada oculta.
+        learning_rate: representa a taxa de aprendizado.
+        alpha: representa o valor de regularização L2.
         model_score: representa o score do modelo.
 
     A rota retorna uma mensagem de sucesso em caso de inserção bem sucedida.
     """
+    # Cria ou retona a instância do Database
+    db = Database()
+    
     # Obtém os dados enviados na requisição
     hidden_layer_sizes = request.json.get("hidden_layer_sizes")
+    learning_rate = request.json.get("learning_rate")
+    alpha = request.json.get("alpha")
     score = request.json.get("model_score")
 
     # Insere os dados na tabela
-    db.insert_train_history(hidden_layer_sizes, score)
+    db.insert_train_history(hidden_layer_sizes, learning_rate, alpha, score)
 
     # Retorna uma resposta de sucesso
     return "Dados inseridos com sucesso", 200
@@ -59,6 +67,9 @@ def select_train_history():
 
     A rota retorna os dados selecionados no formato JSON.
     """
+     # Cria ou retona a instância do Database
+    db = Database()
+    
     # Seleciona os dados da tabela
     results = db.select_top_50_train_history()
 
