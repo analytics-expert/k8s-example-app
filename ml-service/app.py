@@ -22,61 +22,69 @@ def health():
 @app.route("/data", methods=["GET"])
 def data():
     """Endpoint para obter os dados de treinamento do modelo."""
-    # Create a Pandas DataFrame
+    # Carrega os dados
     df_data = load_wine_data_as_frame()
 
-    # Convert the DataFrame to a dictionary
+    # Converte DataFrame para dictionary
     dict_data = df_data.to_dict()
 
-    # Return the dictionary as a JSON response
+    # Retorna o dict como um JSON.
     return jsonify(dict_data)
+
+@app.route("/sample", methods=["GET"])
+def get_sample():
+    """Endpoint para gerar uma amostra aleatória baseado na estatistica 
+    do conjunto de treinamento."""
+    # Gera uma amostra aleatória
+    sample = create_random_sample_wine()
+
+    # Converte DataFrame para dictionary
+    dict_sample = sample.to_dict()
+
+    # Retorna o dict como um JSON.
+    return jsonify(dict_sample)
 
 
 @app.route("/train", methods=["POST"])
 def train():
     """Treina o modelo e insere o histórico de treinamento na base de dados."""
     # Treina o modelo
-    hidden_layer_sizes, score = train_and_save_model()
+    hidden_layer_sizes, learning_rate, alpha, score = train_and_save_model()
 
     # Insere o histórico de treinamento na base de dados
     data = {
         "hidden_layer_sizes": hidden_layer_sizes,
-        "model_score": score
+        "learning_rate": round(learning_rate, 5),
+        "alpha": round(alpha, 5),
+        "model_score": round(score, 5)
     }
-    response = requests.post(DB_SERVICE_URL, json=data)
+    try:
+        response = requests.post(DB_SERVICE_URL, json=data)
+        db_response =  str(response.status_code)
+    except:
+        db_response = 'FAIL'
 
     return {
-        "training": {
-            "hidden_layer_sizes": hidden_layer_sizes,
-            "model_score": score
-        },
-        "db_response": response.status_code
+        "training": data,
+        "db_response": db_response
     }
-
-
-@app.route("/sample", methods=["GET"])
-def get_sample():
-    """Endpoint para obter uma amostra aleatória dos dados de treinamento."""
-    sample = create_random_sample_wine()
-
-    # Convert the DataFrame to a dictionary
-    dict_sample = sample.to_dict()
-
-    # Return the dictionary as a JSON response
-    return jsonify(dict_sample)
-
 
 @app.route("/predict", methods=["POST"])
 def predict():
-    """Endpoint para fazer a predição com base nos dados recebidos via requisição POST."""
-    # Get the JSON payload from the request
-    payload = request.get_json()
+    """Endpoint para fazer a predição com base nos dados recebidos via 
+    requisição POST."""
+    if request.is_json:
+        # Obtém os dados enviados na requisição
+        payload = request.get_json()
 
-    # Convert the payload to a Pandas DataFrame
-    df = pd.DataFrame.from_dict(payload)
+        # Converte para Data Frame
+        df = pd.DataFrame.from_dict(payload)
+    else:
+        # Gera uma amostra aleatória
+        df = create_random_sample_wine()
 
-    # Load the trained model and make predictions
+    # Carrega o modelo treinado e faz as predições.
     y_pred = load_and_predict(df)
 
-    # Return the predictions as a JSON response
-    return jsonify({"predictions": y_pred})
+    # Retorna o dict como um JSON.
+    return jsonify({"samples" : df.to_dict(), "predictions": y_pred})
