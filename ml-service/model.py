@@ -1,6 +1,6 @@
 import logging
 import os
-from random import randint
+from random import randint, uniform
 
 import joblib
 import yaml
@@ -20,13 +20,23 @@ def train_and_save_model():
         Número de neurônios na camada oculta e a acurácia do modelo.
     """
     # Gera uma quantidade aleatória de neurônios na camada oculta do modelo.
-    hidden_layer_sizes = randint(50, 150)
+    hidden_layer_sizes = randint(20, 50)
+    # Gera um valor aleatório para a taxa de aprendizado.
+    learning_rate = uniform(0.0001, 0.0005)
+    # Gera um valor aleatório para o parâmetro de regularização L2.
+    alpha = uniform(0.00005, 0.005)
 
     # Gera os dados de treino e teste.
     X_train, X_test, y_train, y_test = load_wine_data()
 
     # Instancia o modelo MLPClassifier.
-    clf = MLPClassifier(hidden_layer_sizes=hidden_layer_sizes, max_iter=500)
+    clf = MLPClassifier(
+        hidden_layer_sizes=hidden_layer_sizes,
+        learning_rate_init=learning_rate,
+        alpha=alpha,
+        max_iter=150,
+        random_state=42
+    )
 
     # Treina o modelo com o conjunto de dados de treino.
     clf = clf.fit(X_train, y_train)
@@ -38,7 +48,7 @@ def train_and_save_model():
     # modelo salvo.
     _save_model(clf, model_score)
 
-    return hidden_layer_sizes, model_score
+    return hidden_layer_sizes, learning_rate, alpha, model_score
 
 
 def load_and_predict(X):
@@ -53,7 +63,7 @@ def load_and_predict(X):
     """
     # Verifica se o arquivo do modelo existe e, caso não exista, retorna [-1]
     if not os.path.isfile(MODEL_FILENAME):
-        return [-1]
+        return len(X)*[-1]
 
     # Carrega o modelo salvo em disco
     clf = joblib.load(MODEL_FILENAME)
@@ -78,7 +88,7 @@ def _save_model(clf, model_score):
     # Verifica se o arquivo do modelo já existe ou se o score do modelo atual é melhor que o modelo já salvo
     if not os.path.isfile(MODEL_FILENAME) or model_score > _get_current_model_score(SCORE_FILENAME):
         # Registra mensagem de log informando que o modelo está sendo salvo
-        logging.info(f"Salvando modelo com score {model_score}")
+        logging.warning(f"Salvando modelo com score {model_score}")
         # Salva o modelo em um arquivo pickle
         joblib.dump(clf, MODEL_FILENAME)
         # Salva o score do modelo em um arquivo YAML
