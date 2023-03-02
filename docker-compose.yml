@@ -1,0 +1,63 @@
+# Este arquivo docker-compose.yml define os serviços necessários para
+# executar a aplicação K8s App.
+version: '3'
+services:  
+  mysql:
+    image: mysql:8.0.32
+    # Variáveis de ambiente do serviço mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: 123
+    # Mapeamento de portas do serviço mysql
+    ports:
+      - "3306:3306"
+    # Montagem de volumes do serviço mysql
+    volumes:
+      - ./mysql-db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    # Define um healthcheck para o serviço MySQL, que vai testar 
+    # se o servidor está saudável usando o comando "mysqladmin ping"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+
+  db:
+    build: ./db-service
+    # Define que o serviço depende do serviço mysql e só pode ser iniciado depois
+    # que o serviço mysql estiver saudável
+    depends_on:
+      mysql:
+        condition: service_healthy
+    # Variáveis de ambiente do serviço de banco de dados
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_USER: k8s_app_user
+      MYSQL_PASSWORD: 123
+      MYSQL_DB: k8s_app
+    # Mapeamento de portas do serviço de banco de dados
+    ports:
+      - "5000:5000"
+
+  ml:
+    depends_on:
+      - db
+    build: ./ml-service
+    # Variáveis de ambiente do serviço de Machine Learning
+    environment:
+      DB_SERVICE_URL: http://db:5000
+    # Mapeamento de portas do serviço de Machine Learning
+    ports:
+      - "5001:5001"
+
+  web:
+    depends_on:
+      - db
+      - ml
+    build: ./web-service
+    # Variáveis de ambiente do serviço web
+    environment:
+      DB_SERVICE_URL: http://db:5000
+      ML_SERVICE_URL: http://ml:5001
+    # Mapeamento de portas do serviço web
+    ports:
+      - "5002:5002"
