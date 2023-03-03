@@ -1,0 +1,67 @@
+<div class="card">
+   <!-- Corpo da card principal com duas sub-cards -->
+   <div class="card-body">
+      <div class="row align-items-center justify-content-end">
+         <div class="col-auto">
+            <button type="button" class="btn btn-primary" id="btn-predict" style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);" onclick="loadContent('/predict')">Predizer Exemplos</button>
+         </div>
+      </div>
+      <br>
+      <!-- Sub-card de Histórico de Treinos -->
+      <div class="row">
+         <div class="col-md-12 ">
+            <div class="card card-plain" style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);">
+               <!-- Cabeçalho da sub-card com título e descrição -->
+               <div class="card-header text-center">
+                  <h4 class="card-title"> Previsões </h4>
+               </div>
+               <!-- Corpo da sub-card com tabela dinâmica -->
+               <div class="card-body">
+                  <div class="table-responsive">
+                     <table class="table table-hover">
+                        <thead class="">
+                           <tr>
+                              <th>Alcohol</th>
+                              <th>Malic Acid</th>
+                              <th>Ash</th>
+                              <th>Alcalinity of Ash</th>
+                              <th>Magnesium</th>
+                              <th>Total Phenols</th>
+                              <th>Flavanoids</th>
+                              <th>Nonflavanoid Phenols</th>
+                              <th>Proanthocyanins</th>
+                              <th>Color Intensity</th>
+                              <th>Hue</th>
+                              <th>OD280/OD315 of Diluted Wines</th>
+                              <th>Proline</th>
+                              <th>Classe Predita</th>
+                        </thead>
+                        <tbody>
+                           <!-- Loop em variável do Flask para preencher a tabela -->
+                           {% for row in data %}
+                           <tr>
+                              <td>{{ row.alcohol }}</td>
+                              <td>{{ row.malic_acid }}</td>
+                              <td>{{ row.ash }}</td>
+                              <td>{{ row.alcalinity_of_ash }}</td>
+                              <td>{{ row.magnesium }}</td>
+                              <td>{{ row.total_phenols }}</td>
+                              <td>{{ row.flavanoids }}</td>
+                              <td>{{ row.nonflavanoid_phenols }}</td>
+                              <td>{{ row.proanthocyanins }}</td>
+                              <td>{{ row.color_intensity }}</td>
+                              <td>{{ row.hue }}</td>
+                              <td>{{ row['od280/od315_of_diluted_wines'] }}</td>
+                              <td>{{ row.proline }}</td>
+                              <td>{{ row.predict }}</td>
+                           </tr>
+                           {% endfor %}
+                        </tbody>
+                     </table>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>

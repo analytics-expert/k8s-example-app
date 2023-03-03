@@ -1,98 +1,309 @@
-{% extends "base.html" %}
-{% block content %}
-
-<!-- Início da div row -->
-<div class="row">
-   <div class="col-md-12">
-      <div class="card">
-         <!-- Cabeçalho da card principal com título e botão -->
-         <div class="card-header d-flex justify-content-between justify-content-end">
-            <h4 class="card-title"> K8s App </h4>
-            <div>
-               <button type="button" class="btn btn-primary btn-round" id="btn-treinar" onclick="treinarModelo()">Treinar Novo Modelo</button>
-               <button type="button" class="btn btn-primary btn-round" id="btn-refresh" onclick="window.location.reload()">Atualizar</button>
-            </div>
+<!DOCTYPE html>
+<html lang="pt-br">
+   <head>
+      <!-- Definição de meta tags para configuração do viewport e codificação de caracteres -->
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta http-equiv="X-UA-Compatible" content="ie=edge">
+      <!-- Inclusão de estilos externos do Bootstrap 4.0 -->
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css">
+      <!-- Definição de estilo personalizado -->
+      <style>
+         p.card-label{
+         text-align: center;
+         font-size: 17px;
+         color: #333;
+         margin-bottom: 10px;
+         }
+         #modal-predict-message {
+         overflow-x: auto;
+         }
+         /* Sidebar */
+         .sidebar {
+         position: fixed;
+         top: 56px;
+         bottom: 0;
+         left: 0;
+         z-index: 100;
+         padding: 48px 0 0;
+         box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+         background-color: #004C99;
+         color: #fff;
+         }
+         .sidebar-sticky {
+         position: relative;
+         top: 0;
+         height: calc(100vh - 104px);
+         padding-top: .5rem;
+         overflow-x: hidden;
+         overflow-y: auto;
+         }
+         /* Sidebar navigation */
+         .nav-link {
+         font-weight: 500;
+         color: #fff;
+         }
+         .nav-link:hover {
+         color: #d8e1e8;
+         }
+         .nav-link.active {
+         color: #d8e1e8;
+         }
+         .sidebar .nav-item i {
+         font-size: 18px;
+         margin-right: 10px;
+         }
+         /* Main content */
+         [role="main"] {
+         padding-top: 16px;
+         }
+         /* Header */
+         .navbar {
+         background-color: #fff;
+         color: #333;
+         border-bottom: 1px solid #e9ecef;
+         height: 56px;
+         }
+         .navbar-brand {
+         font-weight: 600;
+         color: #333;
+         margin-right: 1rem;
+         }
+         .navbar-nav .nav-link {
+         font-weight: 500;
+         color: #333;
+         }
+         .navbar-nav .nav-link:hover {
+         color: #0069d9;
+         }
+         .navbar-nav .nav-link.active {
+         color: #007bff;
+         }
+         body {
+         margin-top: 0 !important; 
+         }
+         .navbar {
+         border-bottom: none;
+         }
+         .sidebar {
+         padding-top: 0px;
+         }
+         footer {
+         background-color: #f2f2f2;
+         color: #666666;
+         font-size: 14px;
+         padding: 10px;
+         text-align: center;
+         position: fixed;
+         bottom: 0;
+         width: 100%;
+         height: 40px;
+         }
+         .table-model {
+         border-collapse: collapse;
+         margin-bottom: 1rem;
+         width: 100%;
+         }
+         .table-model th, .table-model td {
+         border: 1px solid #ddd;
+         padding: 0.5rem;
+         }
+         .table-model th {
+         background-color: #f2f2f2;
+         font-weight: bold;
+         text-align: left;
+         }
+         .nav-item.selected .nav-link {
+         color: #007bff;
+         background-color: #f8f9fa;
+         }
+      </style>
+      <script>
+         function loadContent(endpoint) {
+         fetch(endpoint)
+            .then(response => response.text())
+            .then(data => {
+               document.querySelector('#main-content').innerHTML = data;
+            })
+            .catch(error => console.error(error));
+         }
+         
+         // Função para chamar a API e mostrar o resultado em um diálogo elegante
+         function treinarModelo() {
+            // Get the button element and the spinner element
+            var buttonTreinar = document.getElementById("btn-treinar");
+            var buttonRefresh = document.getElementById("nav-item-data");
+            var btnPredicSample = document.getElementById("nav-item-history");
+            var btnShowData = document.getElementById("nav-item-predict");
+         
+            // Desabilita os botoes
+            buttonTreinar.disabled = true;
+            buttonRefresh.disabled = true;
+            btnPredicSample.disabled = true;
+            btnShowData.disabled = true;
+         
+            fetch('/train-model', {method: 'POST'})
+               .then(response => response.json())
+               .then(data => {
+                     // Esconde o spinner
+                     buttonTreinar.disabled = false;
+                     buttonRefresh.disabled = false;
+                     btnPredicSample.disabled = false;
+                     btnShowData.disabled = false;
+         
+                     $('#modal-title').text('Novo Treinamento');
+                     var table = document.createElement('table');
+                     table.classList.add('table-model'); // add the "table-model" class
+         
+                     for (const [key, value] of Object.entries(data)) {
+                     if (key === 'training') {
+                        var subtable = document.createElement('table');
+                        subtable.innerHTML = '';
+         
+                        for (const [subkey, subvalue] of Object.entries(value)) {
+                           var row = subtable.insertRow();
+                           var cell1 = row.insertCell();
+                           var cell2 = row.insertCell();
+                           cell1.innerHTML = subkey;
+                           cell2.innerHTML = subvalue;
+                        }
+         
+                        var row = table.insertRow();
+                        var cell1 = row.insertCell();
+                        var cell2 = row.insertCell();
+                        cell1.innerHTML = key;
+                        cell2.appendChild(subtable);
+                     } else {
+                        var row = table.insertRow();
+                        var cell1 = row.insertCell();
+                        var cell2 = row.insertCell();
+                        cell1.innerHTML = key;
+                        cell2.innerHTML = value;
+                     }
+                     }
+                     loadContent("/train-history")
+         
+                     $('#modal-message').empty().append(table);
+         
+                     $('#modal-message').empty().append(table);
+         
+                     $('#myModal').modal('show');
+                     
+               })
+               .catch(error => {
+                     // Esconde o spinner
+                     buttonTreinar.disabled = false;
+                     buttonRefresh.disabled = false;
+                     btnPredicSample.disabled = false;
+                     btnShowData.disabled = false;
+                     $('#myModalSpinner').hide();
+                     $('.modal-backdrop').remove();
+         
+                     $('#modal-title').text('Erro');
+                     $('#modal-message').text(error);
+                     $('#myModal').modal('show');
+               });
+         }
+         
+         function setActiveNavItem(navItemId) {
+            // Remove active class from all nav items
+            var navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(function(item) {
+               item.classList.remove('active');
+            });
+            
+            // Set active class on selected nav item
+            var selectedNavItem = document.querySelector('#' + navItemId);
+            selectedNavItem.classList.add('active');
+         }
+      </script>
+      <!-- Definição do título da página -->
+      <title>K8s App</title>
+      <link rel="shortcut icon" type="image/png" href="static/k8s-icon.svg"/>
+   </head>
+   <body>
+      <!-- Cabeçalho da página com navbar personalizada -->
+      <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
+         <a class="navbar-brand" href="#">
+         <img src="static/k8s-logo.png" width="30" height="30" class="d-inline-block align-top mr-2" alt="">
+         K8s App
+         </a>
+         <!-- Inclusão de imagem no canto direito da navbar -->
+         <a class="ml-auto navbar-brand" href="http://analyticsexpert.io" target="_blank" style="padding-right: 0; margin-right: 0;">
+         Analytics Expert
+         <img src="static/k8s-logo.png" width="30" height="30" class="d-inline-block align-top mr-2" alt="">
+         </a>
+      </nav>
+      <!-- Conteúdo principal da página, que será substituído em outras views -->
+      <div class="container-fluid" style="margin-top: 70px;">
+         <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-1 d-none d-md-block sidebar">
+               <div class="sidebar-sticky">
+                  <ul class="nav flex-column">
+                     <li class="nav-item" id="nav-item-data">
+                        <a class="nav-link" href="#" onclick="loadContent('/data'); setActiveNavItem('nav-item-data');" id="nav-link-data">
+                        <i class="fas fa-database"></i> Dados
+                        </a>
+                     </li>
+                     <li class="nav-item" id="nav-item-history">
+                        <a class="nav-link" href="#" onclick="loadContent('/train-history'); setActiveNavItem('nav-item-history');" id="nav-link-history">
+                        <i class="fas fa-brain"></i> Treinos
+                        </a>
+                     </li>
+                     <li class="nav-item" id="nav-item-predict">
+                        <a class="nav-link" href="#" onclick="loadContent('/load_predict_template'); setActiveNavItem('nav-item-predict');" id="nav-link-predict">
+                        <i class="fas fa-rocket"></i> Previsão
+                        </a>
+                     </li>
+                  </ul>
+               </div>
+            </nav>
+            <main role="main" class="col-md-11 ml-sm-auto">
+               <div id="main-content">
+                  <h1 class="mt-4">K8s-App</h1>
+                  <p class="lead">O K8s-App é uma aplicação capaz de realizar o treinamento de um modelo de Machine Learning para classificar três diferentes tipos de vinhos cultivados na mesma região da Itália, baseado em suas características, como, por exemplo, teor alcoólico e intensidade da cor.</p>
+                  <hr class="my-4">
+                  <p>Os resultados de cada treino serão salvos no banco de dados, criando um histórico, que poderá ser visualizado na interface web. Adicionalmente, o melhor modelo de todos os treinados será salvo em arquivo para ser utilizado na previsão de novos dados (o modelo será deletado com cada deploy do projeto).</p>
+                  <hr class="my-4">
+                  <p>O usuário poderá utilizar a interface web para realizar as seguintes atividades:</p>
+                  <ul>
+                     <li>Visualizar os dados utilizados no treinamento.</li>
+                     <li>Visualizar o histórico de treinamento, assim como treinar um novo modelo.</li>
+                     <li>Gerar exemplos randômicos e realizar a previsão utilizando o modelo salvo.</li>
+                  </ul>
+               </div>
+            </main>
          </div>
-         <!-- Corpo da card principal com duas sub-cards -->
-         <div class="card-body">
-            <div class="row">
-               <div class="col-md-4">
-                  <div class="card card-stats" style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); display: flex; align-items: center; justify-content: center;">
-                     <div class="card-body">
-                        <!-- Ícone da sub-card e informações -->
-                        <div class="icon-big text-center">
-                           <i class="fa fa-refresh" aria-hidden="true"></i>
-                        </div>
-                        <div class="numbers">
-                           <p class="card-category card-label text-center">Treinamento em Andamento</p>
-                           <h3 class="card-title text-center">10</h3>
-                        </div>
-                     </div>
-                  </div>
+      </div>
+      <!-- Rodapé da página -->
+      <footer>
+         <div class="container">
+            <p class="text-center">Analytics Expert &copy; 2023 </p>
+         </div>
+      </footer>
+      <!-- Modal para mostrar mensagem de sucesso ou erro -->
+      <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="modal-title" aria-hidden="true">
+         <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+               <div class="modal-header text-center">
+                  <h5 class="modal-title" id="modal-title"></h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                  </button>
                </div>
-               <div class="col-md-4">
-                  <div class="card card-stats" style="box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); display: flex; align-items: center; justify-content: center;">
-                     <div class="card-body">
-                        <!-- Ícone da sub-card e informações -->
-                        <div class="icon-big text-center">
-                           <i class="fa fa-list-ul" aria-hidden="true"></i>
-                        </div>
-                        <div class="numbers">
-                           <p class="card-category card-label text-center">Total de Treinos</p>
-                           <!-- Inclusão de variável do Flask no template -->
-                           <h3 class="card-title text-center">{{ train_history|length }}</h3>
-                        </div>
-                     </div>
-                  </div>
+               <div class="modal-body" id="modal-message">
                </div>
-            </div>
-            <br>
-            <!-- Sub-card de Histórico de Treinos -->
-            <div class="row">
-               <div class="col-md-12">
-                  <div class="card card-plain">
-                     <!-- Cabeçalho da sub-card com título e descrição -->
-                     <div class="card-header">
-                        <h4 class="card-title"> Histórico de Treinos </h4>
-                        <p class="card-category"> Histórico de treinos realizados no modelo </p>
-                     </div>
-                     <!-- Corpo da sub-card com tabela dinâmica -->
-                     <div class="card-body">
-                        <div class="table-responsive">
-                           <table class="table table-hover">
-                              <thead class="">
-                                 <th>
-                                    ID
-                                 </th>
-                                 <th>
-                                    Timestamp
-                                 </th>
-                                 <th>
-                                    Tamanho da Camada Oculta
-                                 </th>
-                                 <th>
-                                    Score
-                                 </th>
-                              </thead>
-                              <tbody>
-                                 <!-- Loop em variável do Flask para preencher a tabela -->
-                                 {% for item in train_history %}
-                                 <tr>
-                                    <td>{{ item.train_history_id }}</td>
-                                    <td>{{ item.timestamp }}</td>
-                                    <td>{{ item.hidden_layer_sizes }}</td>
-                                    <td>{{ item.score }}</td>
-                                 </tr>
-                                 {% endfor %}
-                              </tbody>
-                           </table>
-                        </div>
-                     </div>
-                  </div>
+               <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
                </div>
             </div>
          </div>
       </div>
-   </div>
-</div>
-{% endblock %}
+      <!-- Inclusão de scripts do jQuery, Popper.js e Bootstrap -->
+      <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+   </body>
+</html>

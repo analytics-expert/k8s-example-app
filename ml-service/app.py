@@ -26,7 +26,7 @@ def data():
     df_data = load_wine_data_as_frame()
 
     # Converte DataFrame para dictionary
-    dict_data = df_data.to_dict()
+    dict_data = df_data.to_dict('records')
 
     # Retorna o dict como um JSON.
     return jsonify(dict_data)
@@ -85,6 +85,7 @@ def predict():
 
     # Carrega o modelo treinado e faz as predições.
     y_pred = load_and_predict(df)
+    df["predict"] = y_pred
 
     # Retorna o dict como um JSON.
-    return jsonify({"samples" : df.to_dict(), "predictions": y_pred})
+    return jsonify({"samples" : df.round(5).to_dict('records'), "predictions": y_pred})

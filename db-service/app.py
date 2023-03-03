@@ -71,7 +71,7 @@ def select_train_history():
     db = Database()
     
     # Seleciona os dados da tabela
-    results = db.select_top_50_train_history()
+    results = db.select_train_history()
 
     # Retorna os dados selecionados
     return json.dumps(results, default=str), 200

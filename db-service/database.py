@@ -60,9 +60,9 @@ class Database:
         cursor.close()
         cnx.close()
 
-    def select_top_50_train_history(self):
+    def select_train_history(self):
         """
-        Seleciona os 50 registros da tabela especificada com melhor score.
+        Seleciona train_history ordenado por score.
 
         Returns:
             list: Lista com os registros retornados.
@@ -78,7 +78,7 @@ class Database:
                learning_rate, alpha, score
             FROM train_history
             ORDER BY score
-            DESC LIMIT 50
+            DESC
         """
         cursor.execute(query)
         results = cursor.fetchall()
