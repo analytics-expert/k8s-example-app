@@ -11,7 +11,7 @@ ML_SERVICE_URL = os.environ.get("ML_SERVICE_URL")
 DB_SERVICE_URL = os.environ.get("DB_SERVICE_URL")
 
 @app.route("/")
-def data():
+def index():
     """
     Função index para exibir a página principal
     """
